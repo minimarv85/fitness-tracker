@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIT - Calisthenics Pro</title>
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>FIT Pro - Calisthenics</title>
+    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -25,56 +29,51 @@
             color: var(--text);
             min-height: 100vh;
             padding-bottom: 80px;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .container { max-width: 600px; margin: 0 auto; }
         
-        .header { padding: 20px; }
-        
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 900; }
         .logo span { color: var(--primary); }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            padding: 0 20px;
-        }
+        .sync-status { font-size: 0.7rem; color: var(--success); }
+        .sync-status.error { color: var(--danger); }
         
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 20px; }
         .stat { text-align: center; padding: 12px 8px; background: var(--card); border-radius: 12px; }
         .stat-value { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
         .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
         
         .quick-actions { display: flex; gap: 12px; padding: 16px 20px; }
-        
-        .action-btn { flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; }
+        .action-btn { flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
         .btn-primary { background: var(--primary); color: #000; }
         .btn-secondary { background: var(--card); color: var(--text); }
         
         .tabs { display: flex; gap: 8px; padding: 0 20px; margin-bottom: 16px; overflow-x: auto; }
-        
         .tab { padding: 10px 20px; background: var(--card); border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; border: 2px solid transparent; }
         .tab.active { background: var(--primary); color: #000; font-weight: 600; }
         
         .program-card { background: var(--card); border-radius: 16px; margin: 0 20px 16px; overflow: hidden; cursor: pointer; }
-        .program-image { width: 100%; height: 150px; object-fit: cover; }
+        .program-image { width: 100%; height: 150px; background: linear-gradient(135deg, #1a1a24, #2a2a34); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
         .program-content { padding: 16px; }
         .program-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
         .program-meta { font-size: 0.8rem; color: var(--text-muted); }
-        
         .program-level { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-top: 8px; }
         .level-beginner { background: var(--success); color: #000; }
         .level-intermediate { background: var(--warning); color: #000; }
         .level-advanced { background: var(--danger); color: #fff; }
         
         .exercise-card { background: var(--card); border-radius: 16px; margin: 0 20px 12px; overflow: hidden; cursor: pointer; }
-        .exercise-image { width: 100%; height: 140px; object-fit: cover; }
+        .exercise-image { width: 100%; height: 140px; background: linear-gradient(135deg, #1a1a24, #2a2a34); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
         .exercise-content { padding: 14px; }
         .exercise-name { font-weight: 600; margin-bottom: 4px; }
         .exercise-meta { font-size: 0.75rem; color: var(--text-muted); }
         
-        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #222; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 0.65rem; gap: 4px; }
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #222; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 0.65rem; gap: 4px; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
         .nav-icon { font-size: 1.4rem; }
         
@@ -82,12 +81,12 @@
         .modal.active { display: block; }
         .modal-header { padding: 20px; display: flex; justify-content: space-between; }
         .modal-close { width: 36px; height: 36px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .modal-image { width: 100%; height: 250px; object-fit: cover; }
+        .modal-image { width: 100%; height: 250px; background: linear-gradient(135deg, #1a1a24, #2a2a34); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
         .modal-content { padding: 20px; }
         .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
         .modal-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px; }
         
-        .video-embed { width: 100%; aspect-ratio: 16/9; background: var(--card); border-radius: 12px; margin-bottom: 16px; }
+        .video-embed { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; margin-bottom: 16px; }
         .video-embed iframe { width: 100%; height: 100%; border-radius: 12px; border: none; }
         
         .exercise-info { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
@@ -100,21 +99,26 @@
         .input:focus { outline: none; border-color: var(--primary); }
         
         .workout-section { padding: 20px; }
-        .exercise-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card); border-radius: 12px; margin-bottom: 8px; }
+        .exercise-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
         .exercise-number { width: 28px; height: 28px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
         .exercise-details { flex: 1; }
         .exercise-name-small { font-weight: 600; font-size: 0.9rem; }
         .exercise-reps { color: var(--primary); font-size: 0.8rem; }
-        .exercise-video { width: 60px; height: 60px; border-radius: 8px; background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .exercise-play { width: 44px; height: 44px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
+        .play-btn { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; }
+        
+        .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="logo">FIT<span>.</span> Pro</div>
+            <div class="sync-status" id="syncStatus">● Synced</div>
         </div>
         
         <div class="stats-grid">
@@ -125,15 +129,15 @@
         </div>
         
         <div class="quick-actions">
-            <button class="action-btn btn-secondary" onclick="openModal('weight')">⚖️ Log Weight</button>
-            <button class="action-btn btn-primary" onclick="openModal('log')">🏋️ Start Workout</button>
+            <button class="action-btn btn-secondary" onclick="openWeightModal()">⚖️ Log Weight</button>
+            <button class="action-btn btn-primary" onclick="startProgram(1)">▶️ Start Workout</button>
         </div>
         
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('programs')">Programs</div>
-            <div class="tab" onclick="switchTab('exercises')">Exercises</div>
-            <div class="tab" onclick="switchTab('myworkouts')">My Workouts</div>
-            <div class="tab" onclick="switchTab('progress')">Progress</div>
+            <div class="tab active" data-tab="programs">Programs</div>
+            <div class="tab" data-tab="exercises">Exercises</div>
+            <div class="tab" data-tab="myworkouts">My Workouts</div>
+            <div class="tab" data-tab="progress">Progress</div>
         </div>
         
         <div id="programsTab" class="tab-content active"><div id="programList"></div></div>
@@ -143,15 +147,16 @@
     </div>
     
     <div class="nav">
-        <div class="nav-item" onclick="switchTab('programs')"><div class="nav-icon">📋</div><div>Programs</div></div>
-        <div class="nav-item" onclick="switchTab('exercises')"><div class="nav-icon">💪</div><div>Exercises</div></div>
-        <div class="nav-item" onclick="openModal('log')"><div class="nav-icon">▶️</div><div>Train</div></div>
-        <div class="nav-item" onclick="switchTab('progress')"><div class="nav-icon">📈</div><div>Progress</div></div>
+        <div class="nav-item active" data-tab="programs"><div class="nav-icon">📋</div><div>Programs</div></div>
+        <div class="nav-item" data-tab="exercises"><div class="nav-icon">💪</div><div>Exercises</div></div>
+        <div class="nav-item" data-tab="myworkouts"><div class="nav-icon">📊</div><div>History</div></div>
+        <div class="nav-item" data-tab="progress"><div class="nav-icon">📈</div><div>Progress</div></div>
     </div>
     
+    <!-- Exercise Modal -->
     <div class="modal" id="exerciseModal">
         <div class="modal-header"><div></div><div class="modal-close" onclick="closeModal()">✕</div></div>
-        <img class="modal-image" id="modalImage" src="" alt="">
+        <div class="modal-image" id="modalImage">💪</div>
         <div class="modal-content">
             <div class="modal-title" id="modalTitle">Exercise Name</div>
             <div class="modal-meta" id="modalMeta">Muscle Group • Difficulty</div>
@@ -162,51 +167,78 @@
                 <div class="info-row"><span class="info-label">Equipment</span><span class="info-value" id="modalEquipment">-</span></div>
             </div>
             <h4 style="margin-bottom:12px">How to do it:</h4>
-            <p style="color:var(--text-muted);line-height:1.6;font-size:0.9rem" id="modalInstructions"></p>
+            <p style="color:var(--text-muted);line-height:1.6;font-size:0.9rem;white-space:pre-line" id="modalInstructions"></p>
         </div>
     </div>
     
+    <!-- Weight Modal -->
     <div class="modal" id="weightModal">
         <div class="modal-header"><div class="modal-title" style="font-size:1.2rem">Log Weight</div><div class="modal-close" onclick="closeModal()">✕</div></div>
         <div class="modal-content">
             <input type="number" class="input" id="weightInput" placeholder="Weight (kg)" step="0.1" style="margin-bottom:16px">
-            <button class="action-btn btn-primary" onclick="saveWeight()">Save</button>
+            <button class="action-btn btn-primary" onclick="saveWeight()" style="width:100%">Save</button>
         </div>
     </div>
     
+    <!-- Workout Modal -->
     <div class="modal" id="workoutModal">
         <div class="modal-header"><div class="modal-title" style="font-size:1.2rem">Start Workout</div><div class="modal-close" onclick="closeModal()">✕</div></div>
         <div class="modal-content" id="workoutContent"></div>
     </div>
     
     <script>
+    // Exercise Database with real YouTube videos
     const exercises = [
-        {id:1,name:"Push-Up",muscle:"Chest, Triceps",level:"Beginner",equipment:"None",image:"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=400&h=300&fit=crop",video:"IODX4hP0co4",muscles:"Chest, Triceps, Shoulders",instructions:"1. Start in plank position with hands shoulder-width apart\n2. Lower your body until chest nearly touches the floor\n3. Keep your core tight and body in a straight line\n4. Push back up to starting position\n5. Repeat without letting your hips sag"},
-        {id:2,name:"Diamond Push-Up",muscle:"Triceps",level:"Intermediate",equipment:"None",image:"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop",video:"2z8G3tbQ4",muscles:"Triceps, Chest",instructions:"1. Form a diamond shape with your hands under your chest\n2. Lower your body while keeping elbows close to your sides\n3. Push back up to starting position\n4. Keep core engaged throughout"},
-        {id:3,name:"Pull-Up",muscle:"Back, Biceps",level:"Intermediate",equipment:"Pull-up Bar",image:"https://images.unsplash.com/photo-1597347316205-36f6c451902a?w=400&h=300&fit=crop",video:"eGo4IYlbE5g",muscles:"Lats, Biceps, Rear Delts",instructions:"1. Hang from bar with palms facing away, shoulder-width apart\n2. Pull yourself up until chin is over the bar\n3. Lower yourself with control\n4. Full range of motion is key"},
-        {id:4,name:"Chin-Up",muscle:"Biceps",level:"Intermediate",equipment:"Pull-up Bar",image:"https://images.unsplash.com/photo-1598971624687-3716f9d66976?w=400&h=300&fit=crop",video:"ccsU1t0bBM",muscles:"Biceps, Lats",instructions:"1. Grip bar with palms facing you\n2. Pull up until chin clears the bar\n3. Lower with control\n4. Focus on biceps engagement"},
-        {id:5,name:"Dips",muscle:"Triceps",level:"Intermediate",equipment:"Dip Bars",image:"https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=400&h=300&fit=crop",video:"2z8GmG2-As",muscles:"Triceps, Chest, Shoulders",instructions:"1. Support yourself on parallel bars\n2. Lower body by bending elbows to 90 degrees\n3. Keep shoulders down and back\n4. Push back up to starting position"},
-        {id:6,name:"Squat",muscle:"Legs",level:"Beginner",equipment:"None",image:"https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop",video:"aclHkVaku9U",muscles:"Quads, Glutes, Hamstrings",instructions:"1. Stand with feet shoulder-width apart\n2. Lower by pushing hips back and bending knees\n3. Go down until thighs are parallel to ground\n4. Drive through heels to stand up\n5. Keep chest up and knees tracking over toes"},
-        {id:7,name:"Pistol Squat",muscle:"Legs",level:"Advanced",equipment:"None",image:"https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop",video:"MXj3GqR92jE",muscles:"Quads, Glutes, Core",instructions:"1. Stand on one leg with other leg extended forward\n2. Lower into a squat on standing leg\n3. Go as low as possible\n4. Stand back up without assistance\n5. Requires significant strength and balance"},
-        {id:8,name:"Muscle-Up",muscle:"Full Body",level:"Advanced",equipment:"Pull-up Bar",image:"https://images.unsplash.com/photo-1598971624687-3716f9d66976?w=400&h=300&fit=crop",video:"SHY9bQZVGcM",muscles:"Lats, Triceps, Chest, Core",instructions:"1. Start with a powerful pull-up\n2. At the top, transition by leaning forward over the bar\n3. Push up and press until arms are straight\n4. Lower back down with control\n5. This is an advanced skill combining pull-up and dip"},
-        {id:9,name:"Planche Lean",muscle:"Core",level:"Intermediate",equipment:"None",image:"https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=400&h=300&fit=crop",video:"3Z1iC5f1i2A",muscles:"Shoulders, Core, Hip Flexors",instructions:"1. Start in push-up position\n2. Walk hands forward past shoulders\n3. Lean forward shifting weight to hands\n4. Keep arms straight and core tight\n5. Hold the lean position"},
-        {id:10,name:"Handstand Push-Up",muscle:"Shoulders",level:"Advanced",equipment:"Wall",image:"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop",video:"w4x2cG7EeE4",muscles:"Shoulders, Triceps, Core",instructions:"1. Kick up into handstand against wall\n2. Lower head toward ground by bending elbows\n3. Push back up to straight arms\n4. Keep core engaged throughout\n5. Start with pike pushes for strength"},
-        {id:11,name:"L-Sit",muscle:"Core",level:"Intermediate",equipment:"Parallettes",image:"https://images.unsplash.com/photo-1597347316205-36f6c451902a?w=400&h=300&fit=crop",video:"IU6R8COc7aM",muscles:"Abs, Hip Flexors, Triceps",instructions:"1. Sit between parallettes or place hands on floor\n2. Press up, lifting hips until legs are parallel to ground\n3. Keep legs straight and together\n4. Hold for time\n5. Start with tucked knees if needed"},
-        {id:12,name:"Front Lever",muscle:"Back",level:"Advanced",equipment:"Pull-up Bar",image:"https://images.unsplash.com/photo-1598971624687-3716f9d66976?w=400&h=300&fit=crop",video:"eCz2s7z5cNA",muscles:"Lats, Core, Biceps",instructions:"1. Hang from bar with overhand grip\n2. Engage lats and lift body until horizontal\n3. Keep body straight like a plank\n4. Hold position with straight arms\n5. Progress from tuck to straddle to full"}
+        {id:1,name:"Push-Up",muscle:"Chest, Triceps",level:"Beginner",equipment:"None",emoji:"💪",video:"IODX4hP0co4",muscles:"Chest, Triceps, Shoulders",instructions:"1. Start in plank position with hands shoulder-width apart\n2. Lower your body until chest nearly touches the floor\n3. Keep your core tight and body in a straight line\n4. Push back up to starting position\n5. Repeat without letting your hips sag"},
+        {id:2,name:"Diamond Push-Up",muscle:"Triceps",level:"Intermediate",equipment:"None",emoji:"💪",video:"2z8G3tbQ4",muscles:"Triceps, Chest",instructions:"1. Form a diamond shape with your hands under your chest\n2. Lower your body while keeping elbows close to your sides\n3. Push back up to starting position\n4. Keep core engaged throughout"},
+        {id:3,name:"Pull-Up",muscle:"Back, Biceps",level:"Intermediate",equipment:"Pull-up Bar",emoji:"🏋️",video:"eGo4IYlbE5g",muscles:"Lats, Biceps, Rear Delts",instructions:"1. Hang from bar with palms facing away, shoulder-width apart\n2. Pull yourself up until chin is over the bar\n3. Lower yourself with control\n4. Full range of motion is key"},
+        {id:4,name:"Chin-Up",muscle:"Biceps",level:"Intermediate",equipment:"Pull-up Bar",emoji:"🏋️",video:"ccsU1t0bBM",muscles:"Biceps, Lats",instructions:"1. Grip bar with palms facing you\n2. Pull up until chin clears the bar\n3. Lower with control\n4. Focus on biceps engagement"},
+        {id:5,name:"Dips",muscle:"Triceps",level:"Intermediate",equipment:"Dip Bars",emoji:"💪",video:"2z8GmG2-As",muscles:"Triceps, Chest, Shoulders",instructions:"1. Support yourself on parallel bars\n2. Lower body by bending elbows to 90 degrees\n3. Keep shoulders down and back\n4. Push back up to starting position"},
+        {id:6,name:"Squat",muscle:"Legs",level:"Beginner",equipment:"None",emoji:"🦵",video:"aclHkVaku9U",muscles:"Quads, Glutes, Hamstrings",instructions:"1. Stand with feet shoulder-width apart\n2. Lower by pushing hips back and bending knees\n3. Go down until thighs are parallel to ground\n4. Drive through heels to stand up"},
+        {id:7,name:"Pistol Squat",muscle:"Legs",level:"Advanced",equipment:"None",emoji:"🦵",video:"MXj3GqR92jE",muscles:"Quads, Glutes, Core",instructions:"1. Stand on one leg with other leg extended forward\n2. Lower into a squat on standing leg\n3. Go as low as possible\n4. Stand back up without assistance"},
+        {id:8,name:"Muscle-Up",muscle:"Full Body",level:"Advanced",equipment:"Pull-up Bar",emoji:"🔥",video:"SHY9bQZVGcM",muscles:"Lats, Triceps, Chest, Core",instructions:"1. Start with a powerful pull-up\n2. At the top, transition by leaning forward over the bar\n3. Push up and press until arms are straight\n4. Lower back down with control"},
+        {id:9,name:"Planche Lean",muscle:"Core",level:"Intermediate",equipment:"None",emoji:"💪",video:"3Z1iC5f1i2A",muscles:"Shoulders, Core, Hip Flexors",instructions:"1. Start in push-up position\n2. Walk hands forward past shoulders\n3. Lean forward shifting weight to hands\n4. Keep arms straight and core tight"},
+        {id:10,name:"Handstand Push-Up",muscle:"Shoulders",level:"Advanced",equipment:"Wall",emoji:"🙌",video:"w4x2cG7EeE4",muscles:"Shoulders, Triceps, Core",instructions:"1. Kick up into handstand against wall\n2. Lower head toward ground by bending elbows\n3. Push back up to straight arms\n4. Keep core engaged throughout"},
+        {id:11,name:"L-Sit",muscle:"Core",level:"Intermediate",equipment:"Parallettes",emoji:"💪",video:"IU6R8COc7aM",muscles:"Abs, Hip Flexors, Triceps",instructions:"1. Sit between parallettes or place hands on floor\n2. Press up, lifting hips until legs are parallel to ground\n3. Keep legs straight and together\n4. Hold for time"},
+        {id:12,name:"Front Lever",muscle:"Back",level:"Advanced",equipment:"Pull-up Bar",emoji:"🏋️",video:"eCz2s7z5cNA",muscles:"Lats, Core, Biceps",instructions:"1. Hang from bar with overhand grip\n2. Engage lats and lift body until horizontal\n3. Keep body straight like a plank\n4. Hold position with straight arms"}
     ];
     
+    // Programs
     const programs = [
-        {id:1,title:"Beginner Foundation",duration:"8 weeks",workoutsPerWeek:"3",level:"beginner",description:"Build your foundation with fundamental exercises",image:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop",workouts:[{name:"Push Day",exercises:[1,2,6]},{name:"Pull Day",exercises:[3,4,11]},{name:"Leg Day",exercises:[6,7]}]},
-        {id:2,title:"Strength Builder",duration:"12 weeks",workoutsPerWeek:"4",level:"intermediate",description:"Build serious strength and muscle",image:"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=200&fit=crop",workouts:[{name:"Push Power",exercises:[1,2,5,10]},{name:"Pull Power",exercises:[3,4,12,11]},{name:"Leg Strength",exercises:[6,7,9]},{name:"Full Body",exercises:[1,3,6,5]}]},
-        {id:3,title:"Elite Athlete",duration:"16 weeks",workoutsPerWeek:"5",level:"advanced",description:"Master advanced skills",image:"https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=200&fit=crop",workouts:[{name:"Skill Day",exercises:[8,12,10]},{name:"Push Elite",exercises:[10,5,2,9]},{name:"Pull Elite",exercises:[8,12,4,11]},{name:"Leg Master",exercises:[7,9,6]},{name:"Skill Practice",exercises:[12,10,8]}]}
+        {id:1,title:"Beginner Foundation",duration:"8 weeks",workoutsPerWeek:"3",level:"beginner",description:"Build your foundation with fundamental exercises",emoji:"🌱",workouts:[{name:"Push Day",exercises:[1,2,6]},{name:"Pull Day",exercises:[3,4,11]},{name:"Leg Day",exercises:[6,7]}]},
+        {id:2,title:"Strength Builder",duration:"12 weeks",workoutsPerWeek:"4",level:"intermediate",description:"Build serious strength and muscle",emoji:"💪",workouts:[{name:"Push Power",exercises:[1,2,5,10]},{name:"Pull Power",exercises:[3,4,12,11]},{name:"Leg Strength",exercises:[6,7,9]},{name:"Full Body",exercises:[1,3,6,5]}]},
+        {id:3,title:"Elite Athlete",duration:"16 weeks",workoutsPerWeek:"5",level:"advanced",description:"Master advanced skills",emoji:"🔥",workouts:[{name:"Skill Day",exercises:[8,12,10]},{name:"Push Elite",exercises:[10,5,2,9]},{name:"Pull Elite",exercises:[8,12,4,11]},{name:"Leg Master",exercises:[7,9,6]},{name:"Skill Practice",exercises:[12,10,8]}]}
     ];
     
+    // API Configuration - using Cloudflare Workers
+    const API = 'https://wd-planner-api.minimarv85.workers.dev/api';
     const STORAGE_KEY = 'fit_pro_data';
-    let data = {weights:[],workouts:[],goalWeight:76};
     
-    function loadData(){
-        const saved=localStorage.getItem(STORAGE_KEY);
-        if(saved)data=JSON.parse(saved);
+    // Data with cloud sync
+    let data = {
+        weights: [],
+        workouts: [],
+        goalWeight: 76,
+        userId: localStorage.getItem('fit_user_id') || 'user_' + Math.random().toString(36).substr(2, 9)
+    };
+    
+    // Save userId
+    localStorage.setItem('fit_user_id', data.userId);
+    
+    // Load data from local + cloud
+    async function loadData() {
+        // Load local first
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const localData = JSON.parse(saved);
+            data.weights = localData.weights || [];
+            data.workouts = localData.workouts || [];
+            data.goalWeight = localData.goalWeight || 76;
+        }
+        
+        // Try cloud sync
+        await syncFromCloud();
+        
         updateStats();
         renderPrograms();
         renderExercises();
@@ -214,25 +246,79 @@
         renderProgress();
     }
     
-    function saveData(){
-        localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+    // Save to local + cloud
+    async function saveData() {
+        // Save locally
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        
+        // Sync to cloud
+        await syncToCloud();
+        
         updateStats();
     }
     
-    function updateStats(){
-        document.getElementById('currentWeight').textContent=data.weights[0]?.weight||'--';
-        document.getElementById('goalWeight').textContent=data.goalWeight;
-        document.getElementById('workouts').textContent=data.workouts.length;
-        let streak=0;
-        const dates=[...new Set(data.workouts.map(w=>w.date))].sort().reverse();
-        if(dates[0]===new Date().toISOString().split('T')[0])streak=1;
-        document.getElementById('streak').textContent=streak;
+    // Sync from cloud
+    async function syncFromCloud() {
+        try {
+            const res = await fetch(`${API}/fitness/${data.userId}`);
+            if (res.ok) {
+                const cloud = await res.json();
+                if (cloud.success && cloud.data) {
+                    // Merge - take most recent
+                    if (cloud.data.weights && cloud.data.weights.length > data.weights.length) {
+                        data.weights = cloud.data.weights;
+                        data.workouts = cloud.data.workouts || [];
+                        data.goalWeight = cloud.data.goalWeight || 76;
+                    }
+                }
+                setSyncStatus(true);
+            }
+        } catch (e) {
+            console.log('Cloud sync failed, using local data');
+            setSyncStatus(false);
+        }
     }
     
-    function renderPrograms(){
-        document.getElementById('programList').innerHTML=programs.map(p=>`
+    // Sync to cloud
+    async function syncToCloud() {
+        try {
+            await fetch(`${API}/fitness/${data.userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    weights: data.weights,
+                    workouts: data.workouts,
+                    goalWeight: data.goalWeight
+                })
+            });
+            setSyncStatus(true);
+        } catch (e) {
+            setSyncStatus(false);
+        }
+    }
+    
+    function setSyncStatus(ok) {
+        const el = document.getElementById('syncStatus');
+        el.textContent = ok ? '● Synced' : '● Offline';
+        el.className = 'sync-status' + (ok ? '' : ' error');
+    }
+    
+    function updateStats() {
+        document.getElementById('currentWeight').textContent = data.weights[0]?.weight || '--';
+        document.getElementById('goalWeight').textContent = data.goalWeight;
+        document.getElementById('workouts').textContent = data.workouts.length;
+        
+        let streak = 0;
+        const dates = [...new Set(data.workouts.map(w => w.date))].sort().reverse();
+        const today = new Date().toISOString().split('T')[0];
+        if (dates[0] === today) streak = 1;
+        document.getElementById('streak').textContent = streak;
+    }
+    
+    function renderPrograms() {
+        document.getElementById('programList').innerHTML = programs.map(p => `
             <div class="program-card" onclick="startProgram(${p.id})">
-                <img class="program-image" src="${p.image}" alt="${p.title}">
+                <div class="program-image">${p.emoji}</div>
                 <div class="program-content">
                     <div class="program-title">${p.title}</div>
                     <div class="program-meta">${p.duration} • ${p.workoutsPerWeek} per week</div>
@@ -242,10 +328,10 @@
         `).join('');
     }
     
-    function renderExercises(){
-        document.getElementById('exerciseList').innerHTML=exercises.map(e=>`
+    function renderExercises() {
+        document.getElementById('exerciseList').innerHTML = exercises.map(e => `
             <div class="exercise-card" onclick="showExercise(${e.id})">
-                <img class="exercise-image" src="${e.image}" alt="${e.name}">
+                <div class="exercise-image">${e.emoji}</div>
                 <div class="exercise-content">
                     <div class="exercise-name">${e.name}</div>
                     <div class="exercise-meta">${e.muscle} • ${e.level}</div>
@@ -254,84 +340,142 @@
         `).join('');
     }
     
-    function renderWorkouts(){
-        const list=document.getElementById('recentWorkouts');
-        if(data.workouts.length===0){list.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:20px">No workouts yet</p>';return;}
-        list.innerHTML=data.workouts.slice(0,10).map(w=>`
-            <div class="exercise-item"><div class="exercise-number">🏋️</div><div class="exercise-details"><div class="exercise-name-small">${w.program}</div><div class="exercise-reps">${w.date}</div></div></div>
+    function renderWorkouts() {
+        const list = document.getElementById('recentWorkouts');
+        if (data.workouts.length === 0) {
+            list.innerHTML = '<div class="empty-state">No workouts yet. Start a program!</div>';
+            return;
+        }
+        list.innerHTML = data.workouts.slice(0, 10).map(w => `
+            <div class="exercise-item">
+                <div class="exercise-number">🏋️</div>
+                <div class="exercise-details">
+                    <div class="exercise-name-small">${w.program}</div>
+                    <div class="exercise-reps">${w.date}</div>
+                </div>
+            </div>
         `).join('');
     }
     
-    function renderProgress(){
-        const list=document.getElementById('weightHistory');
-        if(data.weights.length===0){list.innerHTML='<p style="color:var(--text-muted)">Log weight</p>';return;}
-        list.innerHTML=data.weights.slice(0,10).map(w=>`
-            <div class="exercise-item"><div class="exercise-details"><div class="exercise-name-small">${w.date}</div></div><div class="exercise-reps">${w.weight} kg</div></div>
+    function renderProgress() {
+        const list = document.getElementById('weightHistory');
+        if (data.weights.length === 0) {
+            list.innerHTML = '<div class="empty-state">Log weight to see progress</div>';
+            return;
+        }
+        list.innerHTML = data.weights.slice(0, 10).map(w => `
+            <div class="exercise-item">
+                <div class="exercise-details">
+                    <div class="exercise-name-small">${w.date}</div>
+                </div>
+                <div class="exercise-reps">${w.weight} kg</div>
+            </div>
         `).join('');
     }
     
-    function showExercise(id){
-        const e=exercises.find(ex=>ex.id===id);
-        if(!e)return;
-        document.getElementById('modalImage').src=e.image;
-        document.getElementById('modalTitle').textContent=e.name;
-        document.getElementById('modalMeta').textContent=e.muscle+' • '+e.level;
-        document.getElementById('modalMuscles').textContent=e.muscles;
-        document.getElementById('modalDifficulty').textContent=e.level;
-        document.getElementById('modalEquipment').textContent=e.equipment;
-        document.getElementById('modalInstructions').textContent=e.instructions;
-        document.getElementById('videoEmbed').innerHTML='<iframe src="https://www.youtube.com/embed/'+e.video+'" allowfullscreen></iframe>';
+    function showExercise(id) {
+        const e = exercises.find(ex => ex.id === id);
+        if (!e) return;
+        
+        document.getElementById('modalImage').textContent = e.emoji;
+        document.getElementById('modalTitle').textContent = e.name;
+        document.getElementById('modalMeta').textContent = e.muscle + ' • ' + e.level;
+        document.getElementById('modalMuscles').textContent = e.muscles;
+        document.getElementById('modalDifficulty').textContent = e.level;
+        document.getElementById('modalEquipment').textContent = e.equipment;
+        document.getElementById('modalInstructions').textContent = e.instructions;
+        
+        document.getElementById('videoEmbed').innerHTML = '<iframe src="https://www.youtube.com/embed/' + e.video + '" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
+        
         document.getElementById('exerciseModal').classList.add('active');
     }
     
-    function startProgram(id){
-        const p=programs.find(pr=>pr.id===id);
-        if(!p)return;
-        const workoutList=p.workouts.map((w,i)=>{
-            const exList=w.exercises.map(exId=>exercises.find(e=>e.id===exId)).map((e,j)=>`
-                <div class="exercise-item" onclick="showExercise(${e.id})">
-                    <div class="exercise-number">${j+1}</div>
-                    <div class="exercise-details"><div class="exercise-name-small">${e.name}</div><div class="exercise-reps">${e.level}</div></div>
-                    <div class="exercise-video" onclick="event.stopPropagation();showExercise(${e.id})">▶️</div>
-                </div>
-            `).join('');
-            return '<h4 style="margin:20px 0 12px">'+w.name+'</h4>'+exList;
-        }).join('');
+    function startProgram(id) {
+        const p = programs.find(pr => pr.id === id);
+        if (!p) return;
         
-        document.getElementById('workoutContent').innerHTML='<h2 style="margin-bottom:8px">'+p.title+'</h2><p style="color:var(--text-muted);margin-bottom:20px">'+p.description+'</p>'+workoutList+'<button class="action-btn btn-primary" style="margin-top:20px;width:100%" onclick="logWorkout(\''+p.title+'\')">✓ Complete Today\'s Workout</button>';
+        let html = '<h2 style="margin-bottom:8px">' + p.emoji + ' ' + p.title + '</h2>';
+        html += '<p style="color:var(--text-muted);margin-bottom:20px">' + p.description + '</p>';
+        
+        p.workouts.forEach((w, i) => {
+            html += '<h4 style="margin:20px 0 12px">' + w.name + '</h4>';
+            w.exercises.forEach((exId, j) => {
+                const e = exercises.find(ex => ex.id === exId);
+                if (!e) return;
+                html += `
+                    <div class="exercise-item" onclick="showExercise(${e.id})">
+                        <div class="exercise-number">${j+1}</div>
+                        <div class="exercise-details">
+                            <div class="exercise-name-small">${e.name}</div>
+                            <div class="exercise-reps">${e.level}</div>
+                        </div>
+                        <div class="exercise-play" onclick="event.stopPropagation();showExercise(${e.id})">▶</div>
+                    </div>
+                `;
+            });
+        });
+        
+        html += '<button class="action-btn btn-primary" style="margin-top:20px;width:100%" onclick="logWorkout(\'' + p.title + '\')">✓ Complete Workout</button>';
+        
+        document.getElementById('workoutContent').innerHTML = html;
         document.getElementById('workoutModal').classList.add('active');
     }
     
-    function logWorkout(program){
-        data.workouts.unshift({program:program,date:new Date().toISOString().split('T')[0]});
+    function logWorkout(program) {
+        data.workouts.unshift({
+            program: program,
+            date: new Date().toISOString().split('T')[0]
+        });
         saveData();
         closeModal();
         switchTab('myworkouts');
     }
     
-    function openModal(type){
-        if(type==='weight')document.getElementById('weightModal').classList.add('active');
-        else if(type==='log')startProgram(1);
+    function openWeightModal() {
+        document.getElementById('weightModal').classList.add('active');
     }
     
-    function closeModal(){
-        document.querySelectorAll('.modal').forEach(m=>m.classList.remove('active'));
+    function closeModal() {
+        document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
     }
     
-    function saveWeight(){
-        const w=parseFloat(document.getElementById('weightInput').value);
-        if(w){data.weights.unshift({weight:w,date:new Date().toISOString().split('T')[0]});saveData();closeModal();}
+    function saveWeight() {
+        const w = parseFloat(document.getElementById('weightInput').value);
+        if (w) {
+            data.weights.unshift({ weight: w, date: new Date().toISOString().split('T')[0] });
+            saveData();
+            closeModal();
+            document.getElementById('weightInput').value = '';
+        }
     }
     
-    function switchTab(tab){
-        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-        const idx=['programs','exercises','myworkouts','progress'].indexOf(tab);
-        document.querySelectorAll('.tab')[idx].classList.add('active');
-        document.getElementById(tab+'Tab').classList.add('active');
+    // Tab switching
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        
+        document.querySelector('.tab[data-tab="' + tab + '"]').classList.add('active');
+        document.querySelector('.nav-item[data-tab="' + tab + '"]').classList.add('active');
+        document.getElementById(tab + 'Tab').classList.add('active');
     }
     
+    // Event listeners
+    document.querySelectorAll('.tab').forEach(t => {
+        t.addEventListener('click', () => switchTab(t.dataset.tab));
+    });
+    
+    document.querySelectorAll('.nav-item').forEach(t => {
+        t.addEventListener('click', () => switchTab(t.dataset.tab));
+    });
+    
+    // Initialize
     loadData();
+    
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
     </script>
 </body>
 </html>
