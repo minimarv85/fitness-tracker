@@ -2,164 +2,249 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FIT Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FIT Pro - Calisthenics</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--primary:#00d4ff;--bg:#0a0a0f;--card:#12121a;--text:#fff;--text-muted:#888;--success:#00ff88}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:sans-serif;background:var(--bg);color:var(--text);padding-bottom:80px}
-.container{max-width:600px;margin:0 auto}
-.header{padding:20px}
-.logo{font-size:1.8rem;font-weight:900}
+:root{--primary:#00d4ff;--bg:#0a0a0f;--card:#12121a;--text:#fff;--muted:#666;--green:#00ff88;--red:#ff3b30;--orange:#ffa502}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
+.container{max-width:500px;margin:0 auto}
+.header{padding:20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.6rem;font-weight:900}
 .logo span{color:var(--primary)}
-.stats{display:flex;gap:10px;padding:10px 20px;overflow-x:auto}
-.stat{background:var(--card);padding:10px 15px;border-radius:10px;text-align:center;min-width:70px}
-.stat-value{font-size:1.2rem;font-weight:700;color:var(--primary)}
-.stat-label{font-size:0.6rem;color:var(--text-muted)}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:600;cursor:pointer}
-.btn-primary{background:var(--primary);color:#000;flex:1}
-.btn-secondary{background:var(--card);color:var(--text);flex:1}
-.actions{display:flex;gap:10px;padding:10px 20px}
-.tabs{display:flex;gap:8px;padding:10px 20px;overflow-x:auto}
+.status{font-size:0.7rem;color:var(--green)}
+.status.off{color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px;margin-bottom:15px}
+.stat{background:var(--card);padding:12px 8px;border-radius:10px;text-align:center}
+.stat-val{font-size:1.1rem;font-weight:700;color:var(--primary)}
+.stat-lbl{font-size:0.55rem;color:var(--muted);margin-top:4px;text-transform:uppercase}
+.btns{display:flex;gap:10px;padding:0 20px 15px}
+.btn{flex:1;padding:14px;border:none;border-radius:10px;font-weight:600;font-size:0.9rem;cursor:pointer}
+.btn-pri{background:var(--primary);color:#000}
+.btn-sec{background:var(--card);color:var(--text)}
+.tabs{display:flex;gap:8px;padding:0 20px;margin-bottom:15px;overflow-x:auto}
 .tab{padding:8px 16px;background:var(--card);border-radius:20px;font-size:0.8rem;white-space:nowrap}
 .tab.active{background:var(--primary);color:#000}
-.card{background:var(--card);border-radius:15px;margin:10px 20px;overflow:hidden;padding:15px}
-.card-title{font-weight:700;margin-bottom:5px}
-.card-meta{font-size:0.75rem;color:var(--text-muted)}
-.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;padding:10px;border-top:1px solid #222}
-.nav-item{flex:1;text-align:center;color:var(--text-muted);font-size:0.6rem}
-.nav-item.active{color:var(--primary)}
-.nav-icon{font-size:1.2rem}
+.card{background:var(--card);border-radius:14px;margin:0 20px 12px;overflow:hidden;cursor:pointer}
+.img{width:100%;height:120px;background:linear-gradient(135deg,#222,#333);object-fit:cover}
+.p15{padding:15px}
+.tit{font-weight:700;font-size:1rem;margin-bottom:4px}
+.meta{font-size:0.75rem;color:var(--muted)}
+.lvl{display:inline-block;padding:3px 8px;border-radius:10px;font-size:0.6rem;font-weight:600;margin-top:8px}
+.lvl-beg{background:var(--green);color:#000}
+.lvl-int{background:var(--orange);color:#000}
+.lvl-adv{background:var(--red);color:#fff}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;padding:12px;border-top:1px solid #222}
+.nav-i{flex:1;text-align:center;color:var(--muted);font-size:0.6rem;cursor:pointer}
+.nav-i.active{color:var(--primary)}
+.nav-ic{font-size:1.3rem;margin-bottom:2px}
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);display:none;z-index:100;overflow:auto}
-.modal.active{display:block}
-.modal-header{padding:15px;display:flex;justify-content:flex-end}
-.close{width:30px;height:30px;background:var(--card);border-radius:50%;text-align:center;line-height:30px;cursor:pointer}
-.modal-content{padding:20px}
-.video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;margin-bottom:15px}
-.video iframe{width:100%;height:100%;border:none}
+.modal.show{display:block}
+.mhead{padding:15px;display:flex;justify-content:flex-end}
+.close{width:32px;height:32px;background:var(--card);border-radius:50%;text-align:center;line-height:32px;cursor:pointer}
+.mimg{width:100%;height:200px;background:#222;object-fit:cover}
+.mcon{padding:20px}
+.mtit{font-size:1.4rem;font-weight:700;margin-bottom:5px}
+.mmeta{color:var(--muted);margin-bottom:15px}
+.vid{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;margin-bottom:15px}
+.vid iframe{width:100%;height:100%;border:none}
+.info{background:var(--card);border-radius:10px;padding:15px;margin-bottom:15px}
+.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #222}
+.row:last-child{border:none}
+.lbl{color:var(--muted);font-size:0.8rem}
+.val{font-weight:600}
+.desc{color:var(--muted);line-height:1.6;font-size:0.85rem;white-space:pre-line}
+.item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border-radius:10px;margin-bottom:8px}
+.num{width:26px;height:26px;background:var(--primary);color:#000;border-radius:50%;text-align:center;line-height:26px;font-weight:700;font-size:0.75rem}
+.det{flex:1}
+.det-n{font-weight:600;font-size:0.9rem}
+.det-m{font-size:0.7rem;color:var(--muted)}
+.play{width:40px;height:40px;background:var(--primary);color:#000;border-radius:50%;text-align:center;line-height:40px;font-size:1rem;cursor:pointer}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.tab-c{display:none}
+.tab-c.show{display:block}
+input{width:100%;padding:14px;background:var(--card);border:none;border-radius:10px;color:var(--text);font-size:1rem;margin-bottom:12px}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="header"><div class="logo">FIT<span>.</span> Pro</div></div>
-<div class="stats">
-<div class="stat"><div class="stat-value" id="weight">--</div><div class="stat-label">Weight</div></div>
-<div class="stat"><div class="stat-value" id="streak">0</div><div class="stat-label">Streak</div></div>
-<div class="stat"><div class="stat-value" id="workouts">0</div><div class="stat-label">Workouts</div></div>
+<div class="header">
+<div class="logo">FIT<span>.</span> Pro</div>
+<div class="status" id="status">● Synced</div>
 </div>
-<div class="actions">
-<button class="btn btn-secondary" id="logWeightBtn">⚖️ Log Weight</button>
-<button class="btn btn-primary" id="startBtn">▶️ Start Workout</button>
+<div class="stats">
+<div class="stat"><div class="stat-val" id="wt">--</div><div class="stat-lbl">Weight</div></div>
+<div class="stat"><div class="stat-val" id="st">0</div><div class="stat-lbl">Streak</div></div>
+<div class="stat"><div class="stat-val" id="wk">0</div><div class="stat-lbl">Workouts</div></div>
+<div class="stat"><div class="stat-val" id="gl">76</div><div class="stat-lbl">Goal</div></div>
+</div>
+<div class="btns">
+<button class="btn btn-sec" onclick="openModal('weight')">⚖️ Log Weight</button>
+<button class="btn btn-pri" onclick="startP(1)">▶️ Start Workout</button>
 </div>
 <div class="tabs">
-<div class="tab active" data-tab="programs">Programs</div>
-<div class="tab" data-tab="exercises">Exercises</div>
+<div class="tab active" onclick="tab('prog')">Programs</div>
+<div class="tab" onclick="tab('exer')">Exercises</div>
+<div class="tab" onclick="tab('hist')">History</div>
 </div>
-<div id="content"></div>
+<div id="prog" class="tab-c show"></div>
+<div id="exer" class="tab-c"></div>
+<div id="hist" class="tab-c"></div>
 </div>
 <div class="nav">
-<div class="nav-item active" data-tab="programs"><div class="nav-icon">📋</div><div>Programs</div></div>
-<div class="nav-item" data-tab="exercises"><div class="nav-icon">💪</div><div>Exercises</div></div>
+<div class="nav-i active" onclick="tab('prog')"><div class="nav-ic">📋</div><div>Programs</div></div>
+<div class="nav-i" onclick="tab('exer')"><div class="nav-ic">💪</div><div>Exercises</div></div>
+<div class="nav-i" onclick="tab('hist')"><div class="nav-ic">📊</div><div>History</div></div>
 </div>
-<div class="modal" id="exerciseModal">
-<div class="modal-header"><div class="close" id="closeModal">✕</div></div>
-<div class="modal-content">
-<div class="video" id="video"></div>
-<div class="card-title" id="modalTitle"></div>
-<div class="card-meta" id="modalMeta"></div>
-</div>
-</div>
-<div class="modal" id="workoutModal">
-<div class="modal-header"><div class="close" id="closeWorkout">✕</div></div>
-<div class="modal-content" id="workoutContent"></div>
-</div>
-<div class="modal" id="weightModal">
-<div class="modal-header"><div class="close" id="closeWeight">✕</div></div>
-<div class="modal-content">
-<input type="number" id="weightInput" placeholder="Weight (kg)" style="width:100%;padding:12px;background:var(--card);border:none;border-radius:8px;color:#fff;margin-bottom:10px">
-<button class="btn btn-primary" id="saveWeight" style="width:100%">Save</button>
-</div>
-</div>
-<script>
-const exercises = [
-{id:1,name:"Push-Up",level:"Beginner",muscle:"Chest",video:"IODX4hP0co4"},
-{id:2,name:"Diamond Push-Up",level:"Intermediate",muscle:"Triceps",video:"2z8G3tbQ4"},
-{id:3,name:"Pull-Up",level:"Intermediate",muscle:"Back",video:"eGo4IYlbE5g"},
-{id:4,name:"Chin-Up",level:"Intermediate",muscle:"Biceps",video:"ccsU1t0bBM"},
-{id:5,name:"Dips",level:"Intermediate",muscle:"Triceps",video:"2z8GmG2-As"},
-{id:6,name:"Squat",level:"Beginner",muscle:"Legs",video:"aclHkVaku9U"},
-{id:7,name:"Pistol Squat",level:"Advanced",muscle:"Legs",video:"MXj3GqR92jE"},
-{id:8,name:"Muscle-Up",level:"Advanced",muscle:"Full Body",video:"SHY9bQZVGcM"},
-{id:9,name:"Planche Lean",level:"Intermediate",muscle:"Core",video:"3Z1iC5f1i2A"},
-{id:10,name:"Handstand Push-Up",level:"Advanced",muscle:"Shoulders",video:"w4x2cG7EeE4"},
-{id:11,name:"L-Sit",level:"Intermediate",muscle:"Core",video:"IU6R8COc7aM"},
-{id:12,name:"Front Lever",level:"Advanced",muscle:"Back",video:"eCz2s7z5cNA"}
-];
-const programs = [
-{id:1,title:"Beginner Foundation",level:"beginner",weeks:"8",workouts:[{name:"Push Day",ex:[1,2,6]},{name:"Pull Day",ex:[3,4,11]},{name:"Leg Day",ex:[6,7]}]},
-{id:2,title:"Strength Builder",level:"intermediate",weeks:"12",workouts:[{name:"Push Power",ex:[1,2,5,10]},{name:"Pull Power",ex:[3,4,12,11]}]},
-{id:3,title:"Elite Athlete",level:"advanced",weeks:"16",workouts:[{name:"Skill Day",ex:[8,12,10]},{name:"Push Elite",ex:[10,5,2,9]}]}
-];
-let data = {weights:[],workouts:[]};
 
-function render(){
-document.getElementById('weight').textContent = data.weights[0]?data.weights[0].weight:'--';
-document.getElementById('workouts').textContent = data.workouts.length;
-document.getElementById('streak').textContent = data.workouts.length>0?1:0;
-let html = '';
-programs.forEach(function(p){
-html += '<div class="card" onclick="showProgram('+p.id+')"><div class="card-title">'+p.title+'</div><div class="card-meta">'+p.weeks+' weeks • '+p.level.toUpperCase()+'</div></div>';
-});
-document.getElementById('content').innerHTML = html;
+<!-- Exercise Modal -->
+<div class="modal" id="exModal">
+<div class="mhead"><div class="close" onclick="closeM()">✕</div></div>
+<img class="mimg" id="exImg" src="">
+<div class="mcon">
+<div class="mtit" id="exTit"></div>
+<div class="mmeta" id="exMeta"></div>
+<div class="vid" id="exVid"></div>
+<div class="info">
+<div class="row"><span class="lbl">Muscles</span><span class="val" id="exMus"></span></div>
+<div class="row"><span class="lbl">Difficulty</span><span class="val" id="exDiff"></span></div>
+<div class="row"><span class="lbl">Equipment</span><span class="val" id="exEquip"></span></div>
+</div>
+<div class="desc" id="exDesc"></div>
+</div>
+</div>
+
+<!-- Workout Modal -->
+<div class="modal" id="wkModal">
+<div class="mhead"><div class="close" onclick="closeM()">✕</div></div>
+<div class="mcon" id="wkCon"></div>
+</div>
+
+<!-- Weight Modal -->
+<div class="modal" id="wtModal">
+<div class="mhead"><div class="close" onclick="closeM()">✕</div></div>
+<div class="mcon">
+<div class="mtit">Log Weight</div>
+<input type="number" id="wtIn" placeholder="Weight (kg)" step="0.1">
+<button class="btn btn-pri" style="width:100%" onclick="saveWt()">Save</button>
+</div>
+</div>
+
+<script>
+var ex = [
+{id:1,n:"Push-Up",m:"Chest, Triceps",l:"Beginner",e:"None",v:"IODX4hP0co4",mus:"Chest, Triceps, Shoulders",ins:"1. Start in plank position\n2. Lower until chest nearly touches floor\n3. Keep core tight\n4. Push back up\n5. Repeat"},
+{id:2,n:"Diamond Push-Up",m:"Triceps",l:"Intermediate",e:"None",v:"2z8G3tbQ4",mus:"Triceps, Chest",ins:"1. Form diamond shape with hands\n2. Lower keeping elbows close\n3. Push back up\n4. Keep core engaged"},
+{id:3,n:"Pull-Up",m:"Back, Biceps",l:"Intermediate",e:"Pull-up Bar",v:"eGo4IYlbE5g",mus:"Lats, Biceps",ins:"1. Hang with palms away\n2. Pull up until chin over bar\n3. Lower with control\n4. Full range of motion"},
+{id:4,n:"Chin-Up",m:"Biceps",l:"Intermediate",e:"Pull-up Bar",v:"ccsU1t0bBM",mus:"Biceps, Lats",ins:"1. Grip bar palms facing you\n2. Pull up until chin clears\n3. Lower with control"},
+{id:5,n:"Dips",m:"Triceps",l:"Intermediate",e:"Dip Bars",v:"2z8GmG2-As",mus:"Triceps, Chest",ins:"1. Support on parallel bars\n2. Lower bending elbows to 90°\n3. Keep shoulders down\n4. Push back up"},
+{id:6,n:"Squat",m:"Legs",l:"Beginner",e:"None",v:"aclHkVaku9U",mus:"Quads, Glutes",ins:"1. Feet shoulder-width apart\n2. Lower pushing hips back\n3. Thighs parallel to ground\n4. Drive through heels up"},
+{id:7,n:"Pistol Squat",m:"Legs",l:"Advanced",e:"None",v:"MXj3GqR92jE",mus:"Quads, Glutes",ins:"1. Stand on one leg\n2. Lower into squat\n3. Go as low as possible\n4. Stand back up"},
+{id:8,n:"Muscle-Up",m:"Full Body",l:"Advanced",e:"Pull-up Bar",v:"SHY9bQZVGcM",mus:"Lats, Triceps",ins:"1. Powerful pull-up\n2. Transition over bar\n3. Push up to straight arms\n4. Lower with control"},
+{id:9,n:"Planche Lean",m:"Core",l:"Intermediate",e:"None",v:"3Z1iC5f1i2A",mus:"Shoulders, Core",ins:"1. Push-up position\n2. Walk hands forward\n3. Lean forward\n4. Hold lean"},
+{id:10,n:"Handstand Push-Up",m:"Shoulders",l:"Advanced",e:"Wall",v:"w4x2cG7EeE4",mus:"Shoulders, Triceps",ins:"1. Kick up to handstand\n2. Lower head to ground\n3. Push back up\n4. Keep core tight"},
+{id:11,n:"L-Sit",m:"Core",l:"Intermediate",e:"Parallettes",v:"IU6R8COc7aM",mus:"Abs, Hip Flexors",ins:"1. Sit between parallettes\n2. Press up, lift hips\n3. Legs parallel to ground\n4. Hold for time"},
+{id:12,n:"Front Lever",m:"Back",l:"Advanced",e:"Pull-up Bar",v:"eCz2s7z5cNA",mus:"Lats, Core",ins:"1. Hang from bar\n2. Engage lats, lift body\n3. Hold horizontal\n4. Straight arms"}
+];
+var pg = [
+{id:1,t:"Beginner Foundation",wks:"8",lvl:"beginner",desc:"Build foundation",wk:[{n:"Push Day",ex:[1,2,6]},{n:"Pull Day",ex:[3,4,11]},{n:"Leg Day",ex:[6,7]}]},
+{id:2,t:"Strength Builder",wks:"12",lvl:"intermediate",desc:"Build strength",wk:[{n:"Push Power",ex:[1,2,5,10]},{n:"Pull Power",ex:[3,4,12,11]},{n:"Leg Strength",ex:[6,7,9]}]},
+{id:3,t:"Elite Athlete",wks:"16",lvl:"advanced",desc:"Master skills",wk:[{n:"Skill Day",ex:[8,12,10]},{n:"Push Elite",ex:[10,5,2,9]},{n:"Pull Elite",ex:[8,12,4,11]}]}
+];
+var data = {wt:[],wk:[],gl:76};
+var usr = localStorage.getItem('fid') || 'u'+Math.random().toString(36).substr(2,9);
+localStorage.setItem('fid',usr);
+var api = 'https://wd-planner-api.minimarv85.workers.dev/api';
+
+function ld(){
+var s = localStorage.getItem('fitd');
+if(s){var j = JSON.parse(s);data.wt=j.wt||[];data.wk=j.wk||[];data.gl=j.gl||76}
+upd();
+rpg();rex();rhist();
+sync();
 }
-function showProgram(id){
-var p = programs.find(function(x){return x.id===id});
+function save(){
+localStorage.setItem('fitd',JSON.stringify(data));
+upd();
+sync();
+}
+function upd(){
+document.getElementById('wt').textContent = data.wt[0]?data.wt[0].v:'--';
+document.getElementById('gl').textContent = data.gl;
+document.getElementById('wk').textContent = data.wk.length;
+var st = 0;var ds = data.wk.map(function(x){return x.d});ds.sort().reverse();
+if(ds[0]==new Date().toISOString().split('T')[0])st=1;
+document.getElementById('st').textContent = st;
+}
+function sync(){
+try{fetch(api+'/fitness/'+usr).then(function(r){return r.json()}).then(function(j){if(j.success&&j.data&&j.data.weights&&j.data.weights.length>data.wt.length){data.wt=j.data.weights;data.wk=j.data.workouts||[];data.gl=j.data.goalWeight||76;upd()}}).catch(function(){})}
+catch(e){}
+try{fetch(api+'/fitness/'+usr,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({weights:data.wt,workouts:data.wk,goalWeight:data.gl})}).catch(function(){})}
+catch(e){}
+}
+function rpg(){
+var h='';pg.forEach(function(p){h+='<div class="card" onclick="startP('+p.id+')"><img class="img"><div class="p15"><div class="tit">'+p.t+'</div><div class="meta">'+p.wks+' weeks • '+p.lvl.toUpperCase()+'</div><span class="lvl lvl-'+p.lvl.substring(0,3)+'">'+p.lvl.toUpperCase()+'</span></div></div>'});
+document.getElementById('prog').innerHTML=h;
+}
+function rex(){
+var h='';ex.forEach(function(e){h+='<div class="card" onclick="showE('+e.id+')"><img class="img"><div class="p15"><div class="tit">'+e.n+'</div><div class="meta">'+e.m+' • '+e.l+'</div></div></div>'});
+document.getElementById('exer').innerHTML=h;
+}
+function rhist(){
+var h='';if(data.wk.length==0){h='<div class="empty">No workouts yet</div>'}else{data.wk.slice(0,10).forEach(function(w){h+='<div class="item"><div class="num">🏋️</div><div class="det"><div class="det-n">'+w.p+'</div><div class="det-m">'+w.d+'</div></div></div>'})}
+document.getElementById('hist').innerHTML=h;
+}
+function tab(t){
+document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
+document.querySelectorAll('.tab-c').forEach(function(x){x.classList.remove('show')});
+document.querySelectorAll('.nav-i').forEach(function(x){x.classList.remove('active')});
+event.target.classList.add('active');
+document.getElementById(t).classList.add('show');
+if(t=='prog')document.querySelector('.nav-i:nth-child(1)').classList.add('active');
+if(t=='exer')document.querySelector('.nav-i:nth-child(2)').classList.add('active');
+if(t=='hist')document.querySelector('.nav-i:nth-child(3)').classList.add('active');
+}
+function showE(id){
+var e = ex.find(function(x){return x.id===id});
+if(!e)return;
+document.getElementById('exTit').textContent = e.n;
+document.getElementById('exMeta').textContent = e.m+' • '+e.l;
+document.getElementById('exMus').textContent = e.mus;
+document.getElementById('exDiff').textContent = e.l;
+document.getElementById('exEquip').textContent = e.e;
+document.getElementById('exDesc').textContent = e.ins;
+document.getElementById('exVid').innerHTML = '<iframe src="https://www.youtube.com/embed/'+e.v+'" allowfullscreen></iframe>';
+document.getElementById('exModal').classList.add('show');
+}
+function startP(id){
+var p = pg.find(function(x){return x.id===id});
 if(!p)return;
-var html = '<h2 style="margin-bottom:10px">'+p.title+'</h2>';
-p.workouts.forEach(function(w,i){
-html += '<h3 style="margin:15px 0 10px">'+w.name+'</h3>';
+var h = '<div class="mtit">'+p.t+'</div><div class="mmeta">'+p.desc+'</div>';
+p.wk.forEach(function(w,i){
+h += '<div class="tit" style="margin:15px 0 10px">'+w.n+'</div>';
 w.ex.forEach(function(eid,j){
-var e = exercises.find(function(x){return x.id===eid});
+var e = ex.find(function(x){return x.id===eid});
 if(!e)return;
-html += '<div class="card" onclick="showExercise('+e.id+')" style="display:flex;align-items:center;justify-content:space-between"><div><div class="card-title">'+e.name+'</div><div class="card-meta">'+e.level+'</div></div><button class="btn btn-primary" style="padding:8px 15px">▶</button></div>';
+h += '<div class="item" onclick="showE('+e.id+')"><div class="num">'+(j+1)+'</div><div class="det"><div class="det-n">'+e.n+'</div><div class="det-m">'+e.l+'</div></div><div class="play" onclick="event.stopPropagation();showE('+e.id+')">▶</div></div>';
 });
 });
-html += '<button class="btn btn-primary" style="width:100%;margin-top:20px" onclick="logWorkout(\''+p.title+'\')">✓ Complete Workout</button>';
-document.getElementById('workoutContent').innerHTML = html;
-document.getElementById('workoutModal').classList.add('active');
+h += '<button class="btn btn-pri" style="width:100%;margin-top:20px" onclick="logWk(\''+p.t+'\')">✓ Complete Workout</button>';
+document.getElementById('wkCon').innerHTML = h;
+document.getElementById('wkModal').classList.add('show');
 }
-function showExercise(id){
-var e = exercises.find(function(x){return x.id===id});
-if(!e)return;
-document.getElementById('modalTitle').textContent = e.name;
-document.getElementById('modalMeta').textContent = e.muscle+' • '+e.level;
-document.getElementById('video').innerHTML = '<iframe src="https://www.youtube.com/embed/'+e.video+'" allowfullscreen></iframe>';
-document.getElementById('exerciseModal').classList.add('active');
+function logWk(p){
+data.wk.unshift({p:p,d:new Date().toISOString().split('T')[0]});
+save();
+closeM();
+tab('hist');
 }
-function logWorkout(program){
-data.workouts.unshift({program:program,date:new Date().toISOString().split('T')[0]});
-localStorage.setItem('fitdata',JSON.stringify(data));
-render();
-document.getElementById('workoutModal').classList.remove('active');
+function openModal(t){document.getElementById(t+'Modal').classList.add('show')}
+function closeM(){document.querySelectorAll('.modal').forEach(function(x){x.classList.remove('show')})}
+function saveWt(){
+var v = parseFloat(document.getElementById('wtIn').value);
+if(v){data.wt.unshift({v:v,d:new Date().toISOString().split('T')[0]});save();closeM();document.getElementById('wtIn').value=''}
 }
-document.getElementById('startBtn').onclick = function(){showProgram(1);};
-document.getElementById('logWeightBtn').onclick = function(){document.getElementById('weightModal').classList.add('active');};
-document.getElementById('saveWeight').onclick = function(){
-var w = parseFloat(document.getElementById('weightInput').value);
-if(w){
-data.weights.unshift({weight:w,date:new Date().toISOString().split('T')[0]});
-localStorage.setItem('fitdata',JSON.stringify(data));
-render();
-document.getElementById('weightModal').classList.remove('active');
-document.getElementById('weightInput').value = '';
-}
-};
-document.getElementById('closeModal').onclick = function(){document.getElementById('exerciseModal').classList.remove('active');};
-document.getElementById('closeWorkout').onclick = function(){document.getElementById('workoutModal').classList.remove('active');};
-document.getElementById('closeWeight').onclick = function(){document.getElementById('weightModal').classList.remove('active');};
-var saved = localStorage.getItem('fitdata');
-if(saved)data = JSON.parse(saved);
-render();
+ld();
 </script>
 </body>
 </html>
