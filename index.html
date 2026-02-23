@@ -28,7 +28,6 @@
             color: var(--text);
             min-height: 100vh;
             padding-bottom: 80px;
-            -webkit-user-select: none;
         }
         
         .container { max-width: 600px; margin: 0 auto; }
@@ -52,10 +51,10 @@
         .btn-secondary { background: var(--card); color: var(--text); }
         
         .tabs { display: flex; gap: 8px; padding: 0 20px; margin-bottom: 16px; overflow-x: auto; }
-        .tab { padding: 10px 20px; background: var(--card); border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; border: 2px solid transparent; }
+        .tab { padding: 10px 20px; background: var(--card); border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; }
         .tab.active { background: var(--primary); color: #000; font-weight: 600; }
         
-        .program-card { background: var(--card); border-radius: 16px; margin: 0 20px 16px; overflow: hidden; cursor: pointer; }
+        .program-card { background: var(--card); border-radius: 16px; margin: 0 20px 16px; overflow: hidden; }
         .program-image { width: 100%; height: 150px; object-fit: cover; background: #222; }
         .program-content { padding: 16px; }
         .program-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
@@ -65,7 +64,7 @@
         .level-intermediate { background: var(--warning); color: #000; }
         .level-advanced { background: var(--danger); color: #fff; }
         
-        .exercise-card { background: var(--card); border-radius: 16px; margin: 0 20px 12px; overflow: hidden; cursor: pointer; }
+        .exercise-card { background: var(--card); border-radius: 16px; margin: 0 20px 12px; overflow: hidden; }
         .exercise-image { width: 100%; height: 140px; object-fit: cover; background: #222; }
         .exercise-content { padding: 14px; }
         .exercise-name { font-weight: 600; margin-bottom: 4px; }
@@ -94,10 +93,9 @@
         .info-value { font-weight: 600; }
         
         .input { width: 100%; padding: 14px 16px; background: var(--card); border: 2px solid transparent; border-radius: 12px; color: var(--text); font-size: 1rem; margin-bottom: 16px; }
-        .input:focus { outline: none; border-color: var(--primary); }
         
         .workout-section { padding: 20px; }
-        .exercise-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
+        .exercise-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card); border-radius: 12px; margin-bottom: 8px; }
         .exercise-number { width: 28px; height: 28px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
         .exercise-details { flex: 1; }
         .exercise-name-small { font-weight: 600; font-size: 0.9rem; }
@@ -124,8 +122,8 @@
         </div>
         
         <div class="quick-actions">
-            <button class="action-btn btn-secondary" onclick="openWeightModal()">⚖️ Log Weight</button>
-            <button class="action-btn btn-primary" onclick="startProgram(1)">▶️ Start Workout</button>
+            <button class="action-btn btn-secondary" id="logWeightBtn">⚖️ Log Weight</button>
+            <button class="action-btn btn-primary" id="startWorkoutBtn">▶️ Start Workout</button>
         </div>
         
         <div class="tabs">
@@ -150,7 +148,7 @@
     
     <!-- Exercise Modal -->
     <div class="modal" id="exerciseModal">
-        <div class="modal-header"><div></div><div class="modal-close" onclick="closeModal()">✕</div></div>
+        <div class="modal-header"><div></div><div class="modal-close" id="closeExerciseModal">✕</div></div>
         <img class="modal-image" id="modalImage" src="" alt="">
         <div class="modal-content">
             <div class="modal-title" id="modalTitle">Exercise Name</div>
@@ -168,16 +166,16 @@
     
     <!-- Weight Modal -->
     <div class="modal" id="weightModal">
-        <div class="modal-header"><div class="modal-title" style="font-size:1.2rem">Log Weight</div><div class="modal-close" onclick="closeModal()">✕</div></div>
+        <div class="modal-header"><div class="modal-title" style="font-size:1.2rem">Log Weight</div><div class="modal-close" id="closeWeightModal">✕</div></div>
         <div class="modal-content">
             <input type="number" class="input" id="weightInput" placeholder="Weight (kg)" step="0.1">
-            <button class="action-btn btn-primary" onclick="saveWeight()" style="width:100%">Save</button>
+            <button class="action-btn btn-primary" id="saveWeightBtn" style="width:100%">Save</button>
         </div>
     </div>
     
     <!-- Workout Modal -->
     <div class="modal" id="workoutModal">
-        <div class="modal-header"><div class="modal-title" style="font-size:1.2rem">Start Workout</div><div class="modal-close" onclick="closeModal()">✕</div></div>
+        <div class="modal-header"><div class="modal-title" style="font-size:1.2rem">Start Workout</div><div class="modal-close" id="closeWorkoutModal">✕</div></div>
         <div class="modal-content" id="workoutContent"></div>
     </div>
     
@@ -217,6 +215,7 @@
     
     localStorage.setItem('fit_user_id', data.userId);
     
+    // Load data
     async function loadData() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
@@ -233,15 +232,17 @@
         renderProgress();
     }
     
+    // Save data
     async function saveData() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         await syncToCloud();
         updateStats();
     }
     
+    // Cloud sync functions
     async function syncFromCloud() {
         try {
-            const res = await fetch(`${API}/fitness/${data.userId}`);
+            const res = await fetch(API + '/fitness/' + data.userId);
             if (res.ok) {
                 const cloud = await res.json();
                 if (cloud.success && cloud.data) {
@@ -260,7 +261,7 @@
     
     async function syncToCloud() {
         try {
-            await fetch(`${API}/fitness/${data.userId}`, {
+            await fetch(API + '/fitness/' + data.userId, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -292,28 +293,27 @@
     }
     
     function renderPrograms() {
-        document.getElementById('programList').innerHTML = programs.map(p => `
-            <div class="program-card" onclick="startProgram(${p.id})">
-                <img class="program-image" src="${p.image}" alt="${p.title}" onerror="this.style.background='#333'">
-                <div class="program-content">
-                    <div class="program-title">${p.title}</div>
-                    <div class="program-meta">${p.duration} • ${p.workoutsPerWeek} per week</div>
-                    <span class="program-level level-${p.level}">${p.level.toUpperCase()}</span>
-                </div>
-            </div>
-        `).join('');
+        const list = document.getElementById('programList');
+        list.innerHTML = '';
+        programs.forEach(function(p) {
+            const card = document.createElement('div');
+            card.className = 'program-card';
+            card.innerHTML = '<img class="program-image" src="' + p.image + '" alt="' + p.title + '"><div class="program-content"><div class="program-title">' + p.title + '</div><div class="program-meta">' + p.duration + ' • ' + p.workoutsPerWeek + ' per week</div><span class="program-level level-' + p.level + '">' + p.level.toUpperCase() + '</span></div>';
+            card.onclick = function() { startProgram(p.id); };
+            list.appendChild(card);
+        });
     }
     
     function renderExercises() {
-        document.getElementById('exerciseList').innerHTML = exercises.map(e => `
-            <div class="exercise-card" onclick="showExercise(${e.id})">
-                <img class="exercise-image" src="${e.image}" alt="${e.name}" onerror="this.style.background='#333'">
-                <div class="exercise-content">
-                    <div class="exercise-name">${e.name}</div>
-                    <div class="exercise-meta">${e.muscle} • ${e.level}</div>
-                </div>
-            </div>
-        `).join('');
+        const list = document.getElementById('exerciseList');
+        list.innerHTML = '';
+        exercises.forEach(function(e) {
+            const card = document.createElement('div');
+            card.className = 'exercise-card';
+            card.innerHTML = '<img class="exercise-image" src="' + e.image + '" alt="' + e.name + '"><div class="exercise-content"><div class="exercise-name">' + e.name + '</div><div class="exercise-meta">' + e.muscle + ' • ' + e.level + '</div></div>';
+            card.onclick = function() { showExercise(e.id); };
+            list.appendChild(card);
+        });
     }
     
     function renderWorkouts() {
@@ -322,15 +322,13 @@
             list.innerHTML = '<div class="empty-state">No workouts yet. Start a program!</div>';
             return;
         }
-        list.innerHTML = data.workouts.slice(0, 10).map(w => `
-            <div class="exercise-item">
-                <div class="exercise-number">🏋️</div>
-                <div class="exercise-details">
-                    <div class="exercise-name-small">${w.program}</div>
-                    <div class="exercise-reps">${w.date}</div>
-                </div>
-            </div>
-        `).join('');
+        list.innerHTML = '';
+        data.workouts.slice(0, 10).forEach(function(w) {
+            const item = document.createElement('div');
+            item.className = 'exercise-item';
+            item.innerHTML = '<div class="exercise-number">🏋️</div><div class="exercise-details"><div class="exercise-name-small">' + w.program + '</div><div class="exercise-reps">' + w.date + '</div></div>';
+            list.appendChild(item);
+        });
     }
     
     function renderProgress() {
@@ -339,18 +337,17 @@
             list.innerHTML = '<div class="empty-state">Log weight to see progress</div>';
             return;
         }
-        list.innerHTML = data.weights.slice(0, 10).map(w => `
-            <div class="exercise-item">
-                <div class="exercise-details">
-                    <div class="exercise-name-small">${w.date}</div>
-                </div>
-                <div class="exercise-reps">${w.weight} kg</div>
-            </div>
-        `).join('');
+        list.innerHTML = '';
+        data.weights.slice(0, 10).forEach(function(w) {
+            const item = document.createElement('div');
+            item.className = 'exercise-item';
+            item.innerHTML = '<div class="exercise-details"><div class="exercise-name-small">' + w.date + '</div></div><div class="exercise-reps">' + w.weight + ' kg</div>';
+            list.appendChild(item);
+        });
     }
     
     function showExercise(id) {
-        const e = exercises.find(ex => ex.id === id);
+        const e = exercises.find(function(ex) { return ex.id === id; });
         if (!e) return;
         
         document.getElementById('modalImage').src = e.image;
@@ -361,39 +358,57 @@
         document.getElementById('modalEquipment').textContent = e.equipment;
         document.getElementById('modalInstructions').textContent = e.instructions;
         
-        document.getElementById('videoEmbed').innerHTML = '<iframe src="https://www.youtube.com/embed/' + e.video + '" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
+        document.getElementById('videoEmbed').innerHTML = '<iframe src="https://www.youtube.com/embed/' + e.video + '" allowfullscreen></iframe>';
         
         document.getElementById('exerciseModal').classList.add('active');
     }
     
     function startProgram(id) {
-        const p = programs.find(pr => pr.id === id);
+        const p = programs.find(function(pr) { return pr.id === id; });
         if (!p) return;
         
         let html = '<h2 style="margin-bottom:8px">' + p.title + '</h2>';
         html += '<p style="color:var(--text-muted);margin-bottom:20px">' + p.description + '</p>';
         
-        p.workouts.forEach((w, i) => {
+        p.workouts.forEach(function(w, i) {
             html += '<h4 style="margin:20px 0 12px">' + w.name + '</h4>';
-            w.exercises.forEach((exId, j) => {
-                const e = exercises.find(ex => ex.id === exId);
+            w.exercises.forEach(function(exId, j) {
+                const e = exercises.find(function(ex) { return ex.id === exId; });
                 if (!e) return;
-                html += `
-                    <div class="exercise-item" onclick="showExercise(${e.id})">
-                        <div class="exercise-number">${j+1}</div>
-                        <div class="exercise-details">
-                            <div class="exercise-name-small">${e.name}</div>
-                            <div class="exercise-reps">${e.level}</div>
-                        </div>
-                        <button class="exercise-play" onclick="event.stopPropagation();showExercise(${e.id})">▶</button>
-                    </div>
-                `;
+                html += '<div class="exercise-item" data-exercise="' + e.id + '">';
+                html += '<div class="exercise-number">' + (j+1) + '</div>';
+                html += '<div class="exercise-details"><div class="exercise-name-small">' + e.name + '</div><div class="exercise-reps">' + e.level + '</div></div>';
+                html += '<button class="exercise-play" data-exercise="' + e.id + '">▶</button>';
+                html += '</div>';
             });
         });
         
-        html += '<button class="action-btn btn-primary" style="margin-top:20px;width:100%" onclick="logWorkout(\'' + p.title + '\')">✓ Complete Workout</button>';
+        html += '<button class="action-btn btn-primary" id="completeWorkoutBtn" style="margin-top:20px;width:100%">✓ Complete Workout</button>';
         
         document.getElementById('workoutContent').innerHTML = html;
+        
+        // Add click handlers for exercise items
+        document.querySelectorAll('#workoutContent .exercise-item').forEach(function(item) {
+            item.onclick = function() {
+                const exId = parseInt(item.getAttribute('data-exercise'));
+                showExercise(exId);
+            };
+        });
+        
+        // Add click handlers for play buttons
+        document.querySelectorAll('#workoutContent .exercise-play').forEach(function(btn) {
+            btn.onclick = function(e) {
+                e.stopPropagation();
+                const exId = parseInt(btn.getAttribute('data-exercise'));
+                showExercise(exId);
+            };
+        });
+        
+        // Complete workout button
+        document.getElementById('completeWorkoutBtn').onclick = function() {
+            logWorkout(p.title);
+        };
+        
         document.getElementById('workoutModal').classList.add('active');
     }
     
@@ -403,51 +418,59 @@
             date: new Date().toISOString().split('T')[0]
         });
         saveData();
-        closeModal();
+        closeAllModals();
         switchTab('myworkouts');
     }
     
-    function openWeightModal() {
-        document.getElementById('weightModal').classList.add('active');
-    }
-    
-    function closeModal() {
-        document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-    }
-    
-    function saveWeight() {
-        const w = parseFloat(document.getElementById('weightInput').value);
-        if (w) {
-            data.weights.unshift({ weight: w, date: new Date().toISOString().split('T')[0] });
-            saveData();
-            closeModal();
-            document.getElementById('weightInput').value = '';
-        }
+    function closeAllModals() {
+        document.getElementById('exerciseModal').classList.remove('active');
+        document.getElementById('weightModal').classList.remove('active');
+        document.getElementById('workoutModal').classList.remove('active');
     }
     
     function switchTab(tab) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.nav-item').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
         
         document.querySelector('.tab[data-tab="' + tab + '"]').classList.add('active');
         document.querySelector('.nav-item[data-tab="' + tab + '"]').classList.add('active');
         document.getElementById(tab + 'Tab').classList.add('active');
     }
     
-    document.querySelectorAll('.tab').forEach(t => {
-        t.addEventListener('click', () => switchTab(t.dataset.tab));
+    // Event listeners
+    document.getElementById('logWeightBtn').onclick = function() {
+        document.getElementById('weightModal').classList.add('active');
+    };
+    
+    document.getElementById('startWorkoutBtn').onclick = function() {
+        startProgram(1);
+    };
+    
+    document.getElementById('saveWeightBtn').onclick = function() {
+        const w = parseFloat(document.getElementById('weightInput').value);
+        if (w) {
+            data.weights.unshift({ weight: w, date: new Date().toISOString().split('T')[0] });
+            saveData();
+            closeAllModals();
+            document.getElementById('weightInput').value = '';
+        }
+    };
+    
+    document.getElementById('closeExerciseModal').onclick = closeAllModals;
+    document.getElementById('closeWeightModal').onclick = closeAllModals;
+    document.getElementById('closeWorkoutModal').onclick = closeAllModals;
+    
+    document.querySelectorAll('.tab').forEach(function(t) {
+        t.onclick = function() { switchTab(t.getAttribute('data-tab')); };
     });
     
-    document.querySelectorAll('.nav-item').forEach(t => {
-        t.addEventListener('click', () => switchTab(t.dataset.tab));
+    document.querySelectorAll('.nav-item').forEach(function(t) {
+        t.onclick = function() { switchTab(t.getAttribute('data-tab')); };
     });
     
+    // Initialize
     loadData();
-    
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
     </script>
 </body>
 </html>
