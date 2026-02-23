@@ -3,646 +3,511 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIT - Calisthenics Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>Fitness Tracker</title>
     <style>
         :root {
-            --bg: #000000;
-            --card: #111111;
-            --card-active: #1a1a1a;
-            --accent: #FF6B00;
-            --accent-glow: rgba(255, 107, 0, 0.3);
-            --text: #ffffff;
-            --text-muted: #666666;
-            --success: #00FF88;
-            --danger: #FF3B30;
+            --primary: #00d4ff;
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --text: #fff;
+            --text-muted: #888;
+            --success: #00ff88;
+            --danger: #ff4757;
         }
         
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0;
-            font-family: 'Inter', -apple-system, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            padding-bottom: 100px;
-        }
-        
-        /* Header */
-        .header {
             padding: 20px;
-            background: linear-gradient(180deg, #1a1a1a 0%, transparent 100%);
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
         
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            letter-spacing: -1px;
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        h1 { font-size: 1.5rem; margin-bottom: 20px; color: var(--primary); }
+        h2 { font-size: 1.1rem; margin: 20px 0 10px; }
+        
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
         }
         
-        .logo span { color: var(--accent); }
-        
-        /* Hero Stats */
-        .hero {
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .weight-display {
-            font-size: 5rem;
-            font-weight: 900;
-            letter-spacing: -3px;
-            line-height: 1;
-        }
-        
-        .weight-display span {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-        
-        .weight-change {
-            font-size: 1rem;
-            margin-top: 8px;
-            color: var(--success);
-        }
-        
-        .weight-change.negative { color: var(--danger); }
-        
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            padding: 20px;
         }
         
-        .stat-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
+        .stat {
             text-align: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
         }
         
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-        }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); }
         
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 4px;
-        }
-        
-        /* Progress Ring */
-        .progress-ring {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-            position: relative;
-        }
-        
-        .progress-ring svg {
-            transform: rotate(-90deg);
-        }
-        
-        .progress-ring circle {
-            fill: none;
-            stroke-width: 12;
-        }
-        
-        .progress-ring .bg {
-            stroke: var(--card);
-        }
-        
-        .progress-ring .progress {
-            stroke: var(--accent);
-            stroke-linecap: round;
-            stroke-dasharray: 565;
-            stroke-dashoffset: 565;
-            transition: 1s;
-        }
-        
-        .progress-ring .value {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5rem;
-            font-weight: 900;
-        }
-        
-        /* Navigation */
-        .nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--card);
+        .input-group {
             display: flex;
-            justify-content: space-around;
-            padding: 16px;
-            border-top: 1px solid #222;
+            gap: 8px;
+            margin-bottom: 10px;
         }
         
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            gap: 4px;
+        input, select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #1a1a24;
+            color: white;
+            font-size: 14px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: bold;
             transition: 0.2s;
         }
         
-        .nav-item.active { color: var(--accent); }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-danger { background: var(--danger); color: white; }
         
-        .nav-icon {
-            font-size: 1.5rem;
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
         }
         
-        /* Cards */
-        .section {
-            padding: 20px;
-        }
-        
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-        
-        .workout-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 12px;
+        .history-item {
             display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .workout-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--accent);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        .workout-info {
-            flex: 1;
-        }
-        
-        .workout-type {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        
-        .workout-meta {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-        
-        /* Quick Actions */
-        .quick-actions {
-            display: flex;
-            gap: 12px;
-            padding: 0 20px;
-        }
-        
-        .action-btn {
-            flex: 1;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-weight: 700;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #222;
             font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.2s;
         }
         
-        .action-btn:active { transform: scale(0.98); }
-        
-        .action-btn.secondary {
-            background: var(--card);
-            color: var(--text);
-        }
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            padding: 20px;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal.active { display: flex; }
-        
-        .modal-content {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 24px;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        
-        .input {
-            width: 100%;
-            background: var(--bg);
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            color: var(--text);
-            font-size: 1rem;
-            margin-bottom: 12px;
-        }
-        
-        .input:focus { outline: 2px solid var(--accent); }
-        
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        
-        .modal-actions button {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn-cancel { background: var(--card); color: var(--text); }
-        .btn-save { background: var(--accent); color: #000; }
-        
-        /* Streak */
-        .streak-banner {
-            background: linear-gradient(135deg, var(--accent) 0%, #FF8C00 100%);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .streak-icon { font-size: 2.5rem; }
-        
-        .streak-count {
-            font-size: 2rem;
-            font-weight: 900;
-        }
-        
-        .streak-label {
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
-        
-        /* Chart */
-        .chart-container {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px;
-        }
+        .trend-up { color: var(--danger); }
+        .trend-down { color: var(--success); }
         
         .chart {
+            height: 150px;
             display: flex;
             align-items: flex-end;
             gap: 4px;
-            height: 100px;
+            padding: 10px 0;
         }
         
         .chart-bar {
             flex: 1;
-            background: var(--accent);
+            background: var(--primary);
             border-radius: 4px 4px 0 0;
             min-height: 4px;
-            opacity: 0.6;
-            transition: 0.3s;
+            transition: height 0.3s;
         }
         
-        .chart-bar:hover { opacity: 1; }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
         
-        .chart-bar.active { background: var(--success); }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: var(--card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
         
-        /* Tab content */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab.active {
+            background: var(--primary);
+            color: #000;
+        }
+        
+        .hidden { display: none; }
+        
+        .streak {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(0,255,136,0.1);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .streak-icon { font-size: 1.5rem; }
+        .streak-count { font-size: 1.2rem; font-weight: bold; color: var(--success); }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="logo">FIT<span>.</span></div>
-    </div>
-    
-    <!-- Hero -->
-    <div class="hero">
-        <div class="weight-display" id="currentWeight">--<span>kg</span></div>
-        <div class="weight-change" id="weightChange"></div>
-    </div>
-    
-    <!-- Streak Banner -->
-    <div class="streak-banner" id="streakBanner">
-        <div class="streak-icon">🔥</div>
-        <div>
-            <div class="streak-count"><span id="streakCount">0</span> Day Streak</div>
-            <div class="streak-label">Keep pushing!</div>
-        </div>
-    </div>
-    
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-value" id="bodyFat">--%</div>
-            <div class="stat-label">Body Fat</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="tdee">--</div>
-            <div class="stat-label">Daily Calories</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="totalWorkouts">0</div>
-            <div class="stat-label">Workouts</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="goalWeight">76</div>
-            <div class="stat-label">Goal (kg)</div>
-        </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <button class="action-btn" onclick="openModal('weight')">⚖️ Log Weight</button>
-        <button class="action-btn secondary" onclick="openModal('workout')">🏋️ Log Workout</button>
-    </div>
-    
-    <!-- Weight Chart -->
-    <div class="section">
-        <div class="section-title">Weight Trend</div>
-        <div class="chart-container">
-            <div class="chart" id="weightChart"></div>
-        </div>
-    </div>
-    
-    <!-- Recent Workouts -->
-    <div class="section">
-        <div class="section-title">Recent Workouts</div>
-        <div id="workoutList"></div>
-    </div>
-    
-    <!-- Bottom Navigation -->
-    <div class="nav">
-        <div class="nav-item active" onclick="switchTab('home')">
-            <div class="nav-icon">🏠</div>
-            <div>Home</div>
-        </div>
-        <div class="nav-item" onclick="openModal('measurements')">
-            <div class="nav-icon">📏</div>
-            <div>Measure</div>
-        </div>
-        <div class="nav-item" onclick="openModal('goal')">
-            <div class="nav-icon">🎯</div>
-            <div>Goal</div>
-        </div>
-    </div>
-    
-    <!-- Modal -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-title" id="modalTitle">Log Weight</div>
-            <input type="number" class="input" id="modalInput" placeholder="Weight (kg)" step="0.1">
-            <input type="date" class="input" id="modalDate" style="display:none">
-            <select class="input" id="modalSelect" style="display:none">
-                <option value="Calisthenics">Calisthenics</option>
-                <option value="Push">Push</option>
-                <option value="Pull">Pull</option>
-                <option value="Legs">Legs</option>
-                <option value="Core">Core</option>
-            </select>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn-save" onclick="saveModal()">Save</button>
+    <div class="container">
+        <h1>💪 Fitness Tracker</h1>
+        
+        <!-- Stats Overview -->
+        <div class="card">
+            <div class="stats-grid">
+                <div class="stat">
+                    <div class="stat-value" id="currentWeight">--</div>
+                    <div class="stat-label">Weight (kg)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="bodyFat">--%</div>
+                    <div class="stat-label">Body Fat</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="tdee">--</div>
+                    <div class="stat-label">Daily Calories</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="workoutStreak">0</div>
+                    <div class="stat-label">Workout Streak</div>
+                </div>
             </div>
+        </div>
+        
+        <!-- Streak Banner -->
+        <div class="streak" id="streakBanner">
+            <span class="streak-icon">🔥</span>
+            <span class="streak-count" id="streakCount">0</span>
+            <span>day streak! Keep it up!</span>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('weight')">⚖️ Weight</div>
+            <div class="tab" onclick="showTab('workout')">🏋️ Workout</div>
+            <div class="tab" onclick="showTab('progress')">📈 Progress</div>
+        </div>
+        
+        <!-- Weight Tab -->
+        <div id="weightTab">
+            <div class="card">
+                <h2>Log Weight</h2>
+                <div class="input-group">
+                    <input type="number" id="weightInput" placeholder="Weight (kg)" step="0.1">
+                    <button class="btn-primary" onclick="logWeight()">Log</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Body Measurements</h2>
+                <div class="input-group">
+                    <input type="number" id="waistInput" placeholder="Waist (cm)">
+                    <input type="number" id="chestInput" placeholder="Chest (cm)">
+                </div>
+                <div class="input-group">
+                    <input type="number" id="armsInput" placeholder="Arms (cm)">
+                    <input type="number" id="legsInput" placeholder="Legs (cm)">
+                </div>
+                <button class="btn-primary" onclick="logMeasurements()" style="width:100%">Log Measurements</button>
+            </div>
+            
+            <div class="card">
+                <h2>Weight History</h2>
+                <div class="chart" id="weightChart"></div>
+                <div class="history-list" id="weightHistory"></div>
+            </div>
+        </div>
+        
+        <!-- Workout Tab -->
+        <div id="workoutTab" class="hidden">
+            <div class="card">
+                <h2>Log Workout</h2>
+                <div class="input-group">
+                    <input type="date" id="workoutDate">
+                    <select id="workoutType">
+                        <option value="Calisthenics">Calisthenics</option>
+                        <option value="Push">Push</option>
+                        <option value="Pull">Pull</option>
+                        <option value="Legs">Legs</option>
+                        <option value="Core">Core</option>
+                        <option value="Full Body">Full Body</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="workoutDuration" placeholder="Duration (mins)">
+                    <input type="text" id="workoutNotes" placeholder="Notes (exercises)">
+                </div>
+                <button class="btn-primary" onclick="logWorkout()" style="width:100%">Log Workout</button>
+            </div>
+            
+            <div class="card">
+                <h2>Recent Workouts</h2>
+                <div class="history-list" id="workoutHistory"></div>
+            </div>
+        </div>
+        
+        <!-- Progress Tab -->
+        <div id="progressTab" class="hidden">
+            <div class="card">
+                <h2>Weight Trend</h2>
+                <div class="chart" id="progressChart"></div>
+                <p style="color:var(--text-muted);font-size:0.8rem;margin-top:10px" id="progressSummary"></p>
+            </div>
+            
+            <div class="card">
+                <h2>Measurements Trend</h2>
+                <div class="history-list" id="measurementsHistory"></div>
+            </div>
+        </div>
+        
+        <!-- Goals -->
+        <div class="card" style="margin-top:20px">
+            <h2>🎯 Goals</h2>
+            <div class="input-group">
+                <input type="number" id="goalWeight" placeholder="Target weight (kg)" value="76">
+                <button class="btn-primary" onclick="setGoal()">Set</button>
+            </div>
+            <p style="color:var(--text-muted);font-size:0.9rem" id="goalProgress"></p>
         </div>
     </div>
     
     <script>
-        const STORAGE_KEY = 'fit_tracker_data';
+        // Data storage
+        const STORAGE_KEY = 'fitness_tracker_data';
         
         let data = {
             weights: [],
             measurements: [],
             workouts: [],
-            goalWeight: 76
+            goalWeight: 76,
+            startDate: new Date().toISOString().split('T')[0]
         };
         
-        let currentModal = 'weight';
-        
-        // Load
+        // Load data
         function loadData() {
             const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) data = JSON.parse(saved);
-            updateUI();
+            if (saved) {
+                data = JSON.parse(saved);
+            }
+            updateStats();
+            updateHistory();
         }
         
-        // Save
+        // Save data
         function saveData() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            updateUI();
+            updateStats();
+            updateHistory();
         }
         
-        // Update UI
-        function updateUI() {
+        // Log weight
+        function logWeight() {
+            const weight = parseFloat(document.getElementById('weightInput').value);
+            if (!weight) return;
+            
+            data.weights.unshift({
+                weight: weight,
+                date: new Date().toISOString().split('T')[0]
+            });
+            
+            document.getElementById('weightInput').value = '';
+            saveData();
+        }
+        
+        // Log measurements
+        function logMeasurements() {
+            const waist = document.getElementById('waistInput').value;
+            const chest = document.getElementById('chestInput').value;
+            const arms = document.getElementById('armsInput').value;
+            const legs = document.getElementById('legsInput').value;
+            
+            if (!waist && !chest && !arms && !legs) return;
+            
+            data.measurements.unshift({
+                date: new Date().toISOString().split('T')[0],
+                waist: waist || null,
+                chest: chest || null,
+                arms: arms || null,
+                legs: legs || null
+            });
+            
+            document.getElementById('waistInput').value = '';
+            document.getElementById('chestInput').value = '';
+            document.getElementById('armsInput').value = '';
+            document.getElementById('legsInput').value = '';
+            saveData();
+        }
+        
+        // Log workout
+        function logWorkout() {
+            const date = document.getElementById('workoutDate').value || new Date().toISOString().split('T')[0];
+            const type = document.getElementById('workoutType').value;
+            const duration = document.getElementById('workoutDuration').value;
+            const notes = document.getElementById('workoutNotes').value;
+            
+            if (!duration) return;
+            
+            data.workouts.unshift({
+                date: date,
+                type: type,
+                duration: parseInt(duration),
+                notes: notes
+            });
+            
+            document.getElementById('workoutDuration').value = '';
+            document.getElementById('workoutNotes').value = '';
+            saveData();
+        }
+        
+        // Set goal
+        function setGoal() {
+            const goal = parseFloat(document.getElementById('goalWeight').value);
+            if (goal) {
+                data.goalWeight = goal;
+                saveData();
+            }
+        }
+        
+        // Update stats
+        function updateStats() {
             // Current weight
-            const current = data.weights[0]?.weight;
-            document.getElementById('currentWeight').innerHTML = current ? 
-                `${current}<span>kg</span>` : '--<span>kg</span>';
+            const currentWeight = data.weights[0]?.weight;
+            document.getElementById('currentWeight').textContent = currentWeight ? currentWeight + ' kg' : '--';
             
-            // Weight change
-            if (data.weights.length >= 2) {
-                const diff = (current - data.weights[data.weights.length - 1].weight).toFixed(1);
-                const el = document.getElementById('weightChange');
-                el.textContent = diff < 0 ? `${Math.abs(diff)} kg lost` : `+${diff} kg`;
-                el.className = 'weight-change' + (diff < 0 ? '' : ' negative');
-            }
-            
-            // Body fat estimate
-            if (current && data.measurements[0]?.waist) {
+            //N Body fat estimate (avy method - simplified)
+            if (currentWeight && data.measurements[0]?.waist) {
+                // Very rough estimate
                 const waist = parseFloat(data.measurements[0].waist);
-                const bf = Math.round(waist * 0.4 - 20);
-                document.getElementById('bodyFat').textContent = Math.max(bf, 10) + '%';
+                const bodyFat = Math.round((waist * 0.7) - (currentWeight * 0.2));
+                document.getElementById('bodyFat').textContent = Math.max(bodyFat, 10) + '%';
+            } else {
+                document.getElementById('bodyFat').textContent = '--%';
             }
             
-            // TDEE
-            if (current) {
-                const bmr = 88.4 + 14.4 * current;
-                document.getElementById('tdee').textContent = Math.round(bmr * 1.375);
+            // TDEE (rough estimate)
+            if (currentWeight) {
+                // BMR = 88.4 + 14.4 * weight + 4.8 * height - 5.7 * age (assume 41, 180cm)
+                const bmr = 88.4 + 14.4 * currentWeight + 14.4 * 180 - 5.7 * 41;
+                const tdee = Math.round(bmr * 1.375); // Moderate exercise
+                document.getElementById('tdee').textContent = tdee;
+            } else {
+                document.getElementById('tdee').textContent = '--';
             }
             
-            // Workouts
-            document.getElementById('totalWorkouts').textContent = data.workouts.length;
-            
-            // Goal
-            document.getElementById('goalWeight').textContent = data.goalWeight;
-            
-            // Streak
+            // Workout streak
             const streak = calculateStreak();
+            document.getElementById('workoutStreak').textContent = streak;
             document.getElementById('streakCount').textContent = streak;
             
-            // Chart
-            updateChart();
-            
-            // Workout list
-            updateWorkoutList();
+            // Goal progress
+            if (currentWeight) {
+                const diff = (currentWeight - data.goalWeight).toFixed(1);
+                const direction = diff > 0 ? 'to go' : 'under!';
+                document.getElementById('goalProgress').textContent = 
+                    `${Math.abs(diff)} kg ${direction} goal of ${data.goalWeight} kg`;
+            }
         }
         
         // Calculate streak
         function calculateStreak() {
             if (data.workouts.length === 0) return 0;
+            
             let streak = 0;
             const today = new Date();
             today.setHours(0,0,0,0);
+            
             const dates = [...new Set(data.workouts.map(w => w.date))].sort().reverse();
-            for (let i = 0; i < 30; i++) {
-                const check = new Date(today);
-                check.setDate(check.getDate() - i);
-                if (dates.includes(check.toISOString().split('T')[0])) streak++;
-                else if (i > 0) break;
+            
+            for (let i = 0; i < dates.length; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(checkDate.getDate() - i);
+                const checkStr = checkDate.toISOString().split('T')[0];
+                
+                if (dates.includes(checkStr)) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
+                }
             }
             return streak;
         }
         
-        // Update chart
-        function updateChart() {
-            const chart = document.getElementById('weightChart');
-            const weights = data.weights.slice(0, 14).reverse();
-            if (weights.length < 2) {
-                chart.innerHTML = '<p style="color:var(--text-muted);text-align:center">Log more weights</p>';
-                return;
-            }
-            const max = Math.max(...weights.map(w => w.weight));
-            const min = Math.min(...weights.map(w => w.weight));
-            const range = max - min || 1;
-            
-            chart.innerHTML = weights.map((w, i) => {
-                const height = ((w.weight - min) / range) * 80 + 10;
-                return `<div class="chart-bar" style="height:${height}px" title="${w.date}: ${w.weight}kg"></div>`;
+        // Update history displays
+        function updateHistory() {
+            // Weight history
+            const weightHistory = document.getElementById('weightHistory');
+            weightHistory.innerHTML = data.weights.slice(0, 10).map((w, i) => {
+                let trend = '';
+                if (i < data.weights.length - 1) {
+                    const diff = (w.weight - data.weights[i+1].weight).toFixed(1);
+                    trend = diff > 0 ? `<span class="trend-up">+${diff}</span>` : 
+                             diff < 0 ? `<span class="trend-down">${diff}</span>` : '';
+                }
+                return `<div class="history-item">
+                    <span>${w.date}</span>
+                    <span>${w.weight} kg ${trend}</span>
+                </div>`;
             }).join('');
-        }
-        
-        // Update workout list
-        function updateWorkoutList() {
-            const list = document.getElementById('workoutList (data.workouts.length === 0');
-            if) {
-                list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px">No workouts yet</p>';
-                return;
+            
+            // Weight chart
+            const weightChart = document.getElementById('weightChart');
+            const recentWeights = data.weights.slice(0, 14).reverse();
+            if (recentWeights.length > 1) {
+                const max = Math.max(...recentWeights.map(w => w.weight));
+                const min = Math.min(...recentWeights.map(w => w.weight));
+                const range = max - min || 1;
+                
+                weightChart.innerHTML = recentWeights.map(w => {
+                    const height = ((w.weight - min) / range) * 100 + 10;
+                    return `<div class="chart-bar" style="height:${height}px" title="${w.date}: ${w.weight}kg"></div>`;
+                }).join('');
             }
-            list.innerHTML = data.workouts.slice(0, 5).map(w => `
-                <div class="workout-card">
-                    <div class="workout-icon">🏋️</div>
-                    <div class="workout-info">
-                        <div class="workout-type">${w.type}</div>
-                        <div class="workout-meta">${w.date} • ${w.duration} min</div>
-                    </div>
+            
+            // Workout history
+            const workoutHistory = document.getElementById('workoutHistory');
+            workoutHistory.innerHTML = data.workouts.slice(0, 10).map(w => `
+                <div class="history-item">
+                    <span>${w.date} - ${w.type}</span>
+                    <span>${w.duration} mins</span>
                 </div>
             `).join('');
-        }
-        
-        // Modal
-        function openModal(type) {
-            currentModal = type;
-            const modal = document.getElementById('modal');
-            const title = document.getElementById('modalTitle');
-            const input = document.getElementById('modalInput');
-            const date = document.getElementById('modalDate');
-            const select = document.getElementById('modalSelect');
             
-            input.style.display = 'block';
-            date.style.display = 'none';
-            select.style.display = 'none';
+            // Measurements
+            const measurementsHistory = document.getElementById('measurementsHistory');
+            measurementsHistory.innerHTML = data.measurements.slice(0, 10).map(m => `
+                <div class="history-item">
+                    <span>${m.date}</span>
+                    <span>${m.waist ? 'W:'+m.waist+' ' : ''}${m.chest ? 'C:'+m.chest+' ' : ''}${m.arms ? 'A:'+m.arms : ''}</span>
+                </div>
+            `).join('');
             
-            if (type === 'weight') {
-                title.textContent = 'Log Weight';
-                input.placeholder = 'Weight (kg)';
-                input.type = 'number';
-            } else if (type === 'workout') {
-                title.textContent = 'Log Workout';
-                input.placeholder = 'Duration (minutes)';
-                input.type = 'number';
-                date.style.display = 'block';
-                select.style.display = 'block';
-                date.value = new Date().toISOString().split('T')[0];
-            } else if (type === 'goal') {
-                title.textContent = 'Set Goal';
-                input.placeholder = 'Target weight (kg)';
-                input.value = data.goalWeight;
-            } else if (type === 'measurements') {
-                title.textContent = 'Log Measurements';
-                input.placeholder = 'Waist (cm)';
+            // Progress summary
+            const progressSummary = document.getElementById('progressSummary');
+            if (data.weights.length >= 2) {
+                const first = data.weights[data.weights.length - 1].weight;
+                const last = data.weights[0].weight;
+                const diff = (last - first).toFixed(1);
+                progressSummary.textContent = diff < 0 ? `Lost ${Math.abs(diff)} kg so far!` : `+${diff} kg since starting`;
+            } else {
+                progressSummary.textContent = 'Log more weights to see progress';
             }
-            
-            modal.classList.add('active');
         }
         
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-            document.getElementById('modalInput').value = '';
+        // Tab switching
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('[id$="Tab"]').forEach(t => t.classList.add('hidden'));
+            
+            document.querySelector(`.tab:nth-child(${tab === 'weight' ? 1 : tab === 'workout' ? 2 : 3})`).classList.add('active');
+            document.getElementById(tab + 'Tab').classList.remove('hidden');
         }
         
-        function saveModal() {
-            const input = document.getElementById('modalInput');
-            const value = parseFloat(input.value);
-            if (!value) return;
-            
-            if (currentModal === 'weight') {
-                data.weights.unshift({ weight: value, date: new Date().toISOString().split('T')[0] });
-            } else if (currentModal === 'workout') {
-                const type = document.getElementById('modalSelect').value;
-                const date = document.getElementById('modalDate').value;
-                data.workouts.unshift({ type, duration: value, date });
-            } else if (currentModal === 'goal') {
-                data.goalWeight = value;
-            }
-            
-            saveData();
-            closeModal();
-        }
-        
-        // Init
+        // Initialize
+        document.getElementById('workoutDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('goalWeight').value = data.goalWeight;
         loadData();
     </script>
 </body>
